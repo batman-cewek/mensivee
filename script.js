@@ -60,19 +60,19 @@ let currentUserId = null;
 // Data untuk item galeri
 const galleryItems = [
   {
-    src: "/images/1.jpg",
+    src: "images/1.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
   {
-    src: "/images/2.jpg",
+    src: "images/2.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
   {
-    src: "/images/3.jpg",
+    src: "images/3.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
   {
-    src: "/images/4.jpg",
+    src: "images/4.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
 ];
