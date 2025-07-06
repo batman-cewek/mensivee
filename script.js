@@ -23,13 +23,12 @@ import {
 // jika Anda ingin menjalankan ini secara lokal dengan Firestore.
 const appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
 const firebaseConfig = {
-  apiKey: "AIzaSyCAt_GVeGdbb2wx4Ij_gdgH569SerfBXsQ",
-  authDomain: "mensive-6fbe5.firebaseapp.com",
-  projectId: "mensive-6fbe5",
-  storageBucket: "mensive-6fbe5.firebasestorage.app",
-  messagingSenderId: "854281681987",
-  appId: "1:854281681987:web:ebcff0ddd59a4ef67ea8f6",
-  measurementId: "G-KJXKLB41YX",
+  apiKey: "AIzaSyDAfPl_qzTnr2h49_ML60rNXXeYsQXXlMA",
+  authDomain: "mensive-83be2.firebaseapp.com",
+  projectId: "mensive-83be2",
+  storageBucket: "mensive-83be2.firebasestorage.app",
+  messagingSenderId: "34056273618",
+  appId: "1:34056273618:web:793b40a21520e074f6b70b"
 };
 const initialAuthToken =
   typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null;
