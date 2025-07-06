@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our 4th Mensive</title>
+    <!-- Tailwind CSS CDN untuk styling yang mudah dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Menghubungkan ke file CSS eksternal -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- fontt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- icon -->
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex flex-col items-center justify-center p-4"
+  >
+    <!-- Header untuk mobile (Mensive text dan Hamburger menu) -->
+    <!-- Hanya tampil di layar mobile (sembunyi di md: ke atas) -->
+    <header
+      class="w-full max-w-lg flex justify-between items-center p-4 md:hidden"
+    >
+      <div class="text-2xl font-extrabold text-purple-700">Mensive</div>
+      <button id="hamburger-btn" class="text-gray-700 focus:outline-none">
+        <svg
+          class="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16m-7 6h7"
+          ></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Navbar untuk desktop (tetap di tengah) dan sebagai sidebar untuk mobile -->
+    <!-- Default: fixed, tersembunyi (translate-x-full), di kanan, z-index tinggi untuk mobile -->
+    <!-- md: ke atas: relative, tidak ada transform, w-full, di tengah, opacity 100 -->
+    <nav
+      id="navbar"
+      class="fixed top-0 right-0 h-full w-64 bg-white p-6 shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-40 md:relative md:top-auto md:right-auto md:h-auto md:w-full md:max-w-lg md:flex md:justify-center md:gap-4 md:transform-none md:rounded-full md:mb-8 md:opacity-100"
+    >
+      <!-- Tombol tutup untuk mobile sidebar -->
+      <!-- Hanya tampil di layar mobile (sembunyi di md: ke atas) -->
+      <button
+        id="close-sidebar-btn"
+        class="absolute top-4 right-4 text-gray-700 focus:outline-none md:hidden"
+      >
+        <svg
+          class="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- Kontainer tombol navigasi -->
+      <div
+        class="flex flex-col md:flex-row gap-4 md:gap-4 items-center md:items-stretch h-full md:h-auto justify-center"
+      >
+        <button
+          id="nav-home"
+          class="py-2 px-3 rounded-full font-semibold transition-colors duration-300 text-gray-700 hover:bg-gray-100 w-full md:w-auto"
+        >
+          Home
+        </button>
+        <button
+          id="nav-message"
+          class="py-2 px-3 rounded-full font-semibold transition-colors duration-300 text-gray-700 hover:bg-gray-100 w-full md:w-auto"
+        >
+          Pesan Mensive
+        </button>
+        <button
+          id="nav-gallery"
+          class="py-2 px-3 rounded-full font-semibold transition-colors duration-300 text-gray-700 hover:bg-gray-100 w-full md:w-auto"
+        >
+          Galeri
+        </button>
+        <button
+          id="nav-playlist"
+          class="py-2 px-3 rounded-full font-semibold transition-colors duration-300 text-gray-700 hover:bg-gray-100 w-full md:w-auto"
+        >
+          Playlist
+        </button>
+      </div>
+    </nav>
+
+    <!-- Overlay untuk mobile sidebar -->
+    <!-- Hanya tampil di layar mobile (sembunyi di md: ke atas) -->
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"
+    ></div>
+
+    <!-- Area konten utama -->
+    <div
+      id="main-content-wrapper"
+      class="bg-white p-8 md:p-12 rounded-3xl shadow-xl max-w-lg w-full transform transition-all duration-700 ease-out scale-95 opacity-0"
+    >
+      <!-- Bagian Home -->
+      <div id="home-section" class="text-center hidden">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-purple-700 mb-6 animate-fade-in-down"
+        >
+          Haiii Sasaa Sayangg!
+        </h1>
+        <p
+          class="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed animate-fade-in-up delay-200"
+        >
+          Happyy mensiveee!! it's our special day! 🎉 selamat mengulang tanggal
+          27 yang ke-4 yaa sayangg..🌷💌
+        </p>
+      </div>
+
+      <!-- Bagian Pesan Mensive (Gaya Secreto) -->
+      <div id="message-section" class="text-center hidden">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-purple-700 mb-4 animate-fade-in-down"
+        >
+          Mensive Message 💌
+        </h1>
+        <p
+          class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed animate-fade-in-up delay-200"
+        >
+          Tuliskan ucapan atau kenangan manis kitaa di sini! sayangg juga bisa
+          menambahkan lagu Spotify.
+        </p>
+
+        <!-- Form Input Mesej -->
+        <div
+          class="bg-purple-50 p-6 rounded-2xl border border-purple-200 mb-8 shadow-inner animate-fade-in-up"
+        >
+          <textarea
+            id="new-message-input"
+            placeholder="Tulis pesan mensive-nya di sini..."
+            rows="5"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 resize-y mb-3"
+          ></textarea>
+
+          <!-- Input Carian Spotify Baru -->
+          <div class="relative mb-3">
+            <input
+              id="spotify-search-input"
+              type="text"
+              placeholder="Cari lagu Spotify (contoh: RotTarotratrottt)"
+              class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200"
+            />
+            <!-- Div untuk hasil carian Spotify -->
+            <div
+              id="spotify-search-results"
+              class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden"
+            >
+              <!-- Hasil carian akan diinjeksi di sini -->
+            </div>
+          </div>
+
+          <input
+            id="sender-name-input"
+            type="text"
+            placeholder="masukin nama km (opsional sie)"
+            class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 mb-4"
+          />
+          <button
+            id="send-message-btn"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center mx-auto"
+          >
+            Kirim Pesan
+          </button>
+          <p id="message-error" class="text-red-600 text-sm mt-4 hidden"></p>
+        </div>
+
+        <!-- Menampilkan Mesej yang Sudah Ada -->
+        <h2 class="text-2xl font-bold text-purple-700 mb-6 mt-8">
+          Pesan dari hati:
+        </h2>
+        <div id="messages-container" class="space-y-6">
+          <p class="text-gray-600">Load message...</p>
+        </div>
+      </div>
+
+      <!-- Bagian Galeri -->
+      <div id="gallery-section" class="text-center hidden">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-purple-700 mb-6 animate-fade-in-down"
+        >
+          Where Love Meets Art 🎨
+        </h1>
+        <p
+          class="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed animate-fade-in-up delay-200"
+        >
+          cieee sekarang mah nambah lagi yaa di web, bukan cuma di up di ig
+          doang..
+        </p>
+        <div
+          id="gallery-grid"
+          class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in-up delay-400"
+        >
+          <!-- Item galeri akan diinjeksi di sini oleh JS -->
+        </div>
+      </div>
+
+      <!-- Bagian Playlist Khusus -->
+      <div id="playlist-section" class="text-center hidden">
+        <h1
+          class="text-4xl md:text-5xl font-extrabold text-purple-700 mb-6 animate-fade-in-down"
+        >
+          Playlist Khusus Kita
+        </h1>
+        <p
+          class="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed animate-fade-in-up delay-200"
+        >
+          ini playlist isinya lagu-lagu skena semua kayak imas anisa🕊️
+        </p>
+        <div
+          id="spotify-playlist-embed"
+          class="w-full max-w-md mx-auto rounded-xl overflow-hidden shadow-lg animate-fade-in-up delay-400 h-[400px]"
+        >
+          <!-- Spotify playlist iframe akan diinjeksi di sini -->
+        </div>
+        <p class="text-gray-600 text-sm mt-4"></p>
+      </div>
+    </div>
+
+    <!-- Modal Gambar (Pop-up) -->
+    <div
+      id="image-modal"
+      class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 hidden"
+    >
+      <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-xl w-full relative">
+        <button
+          id="close-modal-btn"
+          class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 text-lg font-bold leading-none w-8 h-8 flex items-center justify-center"
+          aria-label="Tutup"
+        >
+          &times;
+        </button>
+        <img
+          id="modal-image"
+          src=""
+          alt=""
+          class="w-full h-auto rounded-lg mb-4 max-h-[70vh] object-contain"
+        />
+        <p
+          id="modal-caption"
+          class="text-gray-800 text-center font-medium text-lg"
+        ></p>
+      </div>
+    </div>
+
+    <!-- Menampilkan ID Pengguna Semasa (untuk keperluan aplikasi multi-pengguna) -->
+    <!-- <div class="mt-8 text-center text-gray-600 text-sm">
+      ID User: <span id="display-user-id">Memuatkan...</span>
+    </div> -->
+
+    <!-- Menghubungkan ke file JavaScript eksternal (menggunakan type="module" karena Firebase SDK) -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
