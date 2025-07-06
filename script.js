@@ -17,33 +17,42 @@ import {
   deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+console.log("script.js: Skrip mulai dimuat.");
+
 // Mendeklarasikan variabel global untuk Firebase (disediakan oleh persekitaran Canvas)
 // Nilai fallback untuk pengujian lokal di luar Canvas.
-// PENTING: Ganti nilai placeholder ini dengan konfigurasi Firebase projek Anda sendiri
-// jika Anda ingin menjalankan ini secara lokal dengan Firestore.
-const appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+// =================================================================================================
+// PENTING SEKALI: GANTI NILAI PLACEHOLDER INI DENGAN KONFIGURASI FIREBASE PROYEK ANDA SENDIRI!
+// Anda bisa mendapatkan ini dari Firebase Console -> Project settings -> Your apps -> Pilih aplikasi web Anda -> Firebase SDK snippet (pilih "Config")
+// =================================================================================================
+const appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id"; // Biarkan ini seperti adanya
 const firebaseConfig = {
   apiKey: "AIzaSyDAfPl_qzTnr2h49_ML60rNXXeYsQXXlMA",
   authDomain: "mensive-83be2.firebaseapp.com",
   projectId: "mensive-83be2",
   storageBucket: "mensive-83be2.firebasestorage.app",
   messagingSenderId: "34056273618",
-  appId: "1:34056273618:web:793b40a21520e074f6b70b"
+  appId: "1:34056273618:web:793b40a21520e074f6b70b",
 };
 const initialAuthToken =
-  typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null;
+  typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null; // Biarkan ini seperti adanya
 
-// SPOTIFY API CONFIGURATION (GANTI DENGAN KUNCI ANDA)
-// PENTING: JANGAN PERNAH MENGEKSPOS CLIENT_SECRET DI APLIKASI PRODUKSI SISI KLIEN!
-// Untuk tujuan demonstrasi/pembelajaran, Anda perlu mendapatkan ini dari Spotify Developer Dashboard.
-// Buat aplikasi di https://developer.spotify.com/dashboard/applications
-const SPOTIFY_CLIENT_ID = "256ed70938184db7a0aacb88daa8b9a3"; // Ganti ini dengan Client ID Spotify Anda
-const SPOTIFY_CLIENT_SECRET = "94aec0f4b9c34695a27145665e877b0d"; // Ganti ini dengan Client Secret Spotify Anda
+// =================================================================================================
+// PENTING SEKALI: GANTI NILAI PLACEHOLDER INI DENGAN KUNCI SPOTIFY API ANDA!
+// Anda bisa mendapatkan ini dari Spotify Developer Dashboard: https://developer.spotify.com/dashboard/applications
+// Buat aplikasi di sana untuk mendapatkan Client ID dan Client Secret.
+// Peringatan: Mengekspos Client Secret di aplikasi sisi klien (frontend) seperti ini adalah risiko keamanan untuk aplikasi produksi.
+// Untuk proyek pribadi/demonstrasi, ini dapat diterima, tetapi untuk aplikasi publik, Anda harus menggunakan backend.
+// =================================================================================================
+const SPOTIFY_CLIENT_ID = "256ed70938184db7a0aacb88daa8b9a3"; // <--- GANTI INI
+const SPOTIFY_CLIENT_SECRET = "94aec0f4b9c34695a27145665e877b0d"; // <--- GANTI INI
 
-// ID PLAYLIST SPOTIFY ANDA (GANTI INI DENGAN SANGAT PENTING)
+// =================================================================================================
+// PENTING SEKALI: GANTI NILAI PLACEHOLDER INI DENGAN ID PLAYLIST SPOTIFY ANDA!
 // Anda bisa mendapatkan ID playlist dari URL playlist Spotify.
 // Contoh: https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M -> IDnya adalah 37i9dQZF1DXcBWIGoYBM5M
-const YOUR_SPOTIFY_PLAYLIST_ID = "0YIceDsDdwZBK6S7M1iUzL?"; // <--- PASTIKAN INI DIGANTI DENGAN ID PLAYLIST ANDA!
+// =================================================================================================
+const YOUR_SPOTIFY_PLAYLIST_ID = "0YIceDsDdwZBK6S7M1iUzL?"; // <--- GANTI INI
 
 let spotifyAccessToken = "";
 let selectedSpotifyTrackId = null; // Untuk menyimpan ID lagu Spotify yang dipilih
@@ -58,10 +67,24 @@ let currentUserId = null;
 
 // Data untuk item galeri
 const galleryItems = [
-  { src: "images/1.jpg", caption: "Kenangan Manis Bersamamu" },
-  { src: "images/2.jpg", caption: "Kenangan Manis Bersamamu" },
-  { src: "images/3.jpg", caption: "Kenangan Manis Bersamamu" },
-  { src: "images/4.jpg", caption: "Kenangan Manis Bersamamu" },
+  { src: "images/1.jpg", caption: "Kenangan Manis Bersamamu" }, // Pastikan jalur ini benar relatif terhadap index.html
+  { src: "images/2.jpg", caption: "Cinta Kita yang Tak Berujung" },
+  {
+    src: "https://placehold.co/600x450/D291BC/FFFFFF?text=Momen+3",
+    caption: "Selalu Bersama dalam Suka dan Duka",
+  },
+  {
+    src: "https://placehold.co/600x450/FFC72C/FFFFFF?text=Momen+4",
+    caption: "Petualangan Kita yang Tak Terlupakan",
+  },
+  {
+    src: "https://placehold.co/600x450/A0DAA9/FFFFFF?text=Momen+5",
+    caption: "Senyum Manismu yang Menerangi Hari",
+  },
+  {
+    src: "https://placehold.co/600x450/F0F8FF/000000?text=Momen+6",
+    caption: "Masa Depan Cerah Bersama",
+  },
 ];
 
 // Mendapatkan referensi ke elemen UI
@@ -78,7 +101,7 @@ const gallerySection = document.getElementById("gallery-section");
 const playlistSection = document.getElementById("playlist-section");
 const spotifyPlaylistEmbedDiv = document.getElementById(
   "spotify-playlist-embed"
-); // Pastikan ini ada di index.html
+);
 
 const newMessageInput = document.getElementById("new-message-input");
 const spotifySearchInput = document.getElementById("spotify-search-input");
@@ -102,10 +125,13 @@ const hamburgerBtn = document.getElementById("hamburger-btn");
 const closeSidebarBtn = document.getElementById("close-sidebar-btn");
 const overlay = document.getElementById("overlay");
 
+console.log("script.js: Referensi elemen UI berhasil didapatkan.");
+
 let currentPage = "home"; // State halaman awal
 
 // --- Logika Navigasi ---
 function navigateTo(page) {
+  console.log(`Navigasi ke halaman: ${page}`);
   // Sembunyikan semua bagian
   homeSection.classList.add("hidden");
   messageSection.classList.add("hidden");
@@ -168,12 +194,14 @@ function navigateTo(page) {
 
 // --- Logika Sidebar Mobile ---
 function openSidebar() {
+  console.log("openSidebar dipanggil.");
   navbar.classList.remove("translate-x-full");
   navbar.classList.add("translate-x-0", "navbar-open"); // Tambahkan kelas kustom
   overlay.classList.remove("hidden");
 }
 
 function closeSidebar() {
+  console.log("closeSidebar dipanggil.");
   navbar.classList.remove("translate-x-0", "navbar-open"); // Hapus kelas kustom
   navbar.classList.add("translate-x-full");
   overlay.classList.add("hidden");
@@ -181,45 +209,68 @@ function closeSidebar() {
 
 // --- Inisialisasi dan Otentikasi Firebase ---
 async function initFirebase() {
+  console.log("initFirebase dipanggil.");
   try {
     if (!app) {
       // Inisialisasi hanya sekali
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
       auth = getAuth(app);
+      console.log("Firebase app, db, auth diinisialisasi.");
 
       onAuthStateChanged(auth, async (user) => {
         if (user) {
           currentUserId = user.uid;
           displayUserIdSpan.textContent = user.uid;
+          console.log(
+            "Firebase Auth State Changed: Pengguna masuk dengan UID:",
+            user.uid
+          );
         } else {
           currentUserId = null;
           displayUserIdSpan.textContent = "Mencuba log masuk...";
+          console.log("Firebase Auth State Changed: Pengguna keluar.");
         }
         isFirebaseReady = true;
         sendMessageBtn.disabled = !(isFirebaseReady && auth.currentUser);
+        console.log(
+          "isFirebaseReady diatur ke true. Tombol kirim diaktifkan:",
+          !sendMessageBtn.disabled
+        );
         setupFirestoreListener();
       });
 
       if (initialAuthToken) {
+        console.log("Mencoba masuk dengan custom token...");
         await signInWithCustomToken(auth, initialAuthToken);
+        console.log("Berhasil masuk dengan custom token.");
       } else {
+        console.log("Mencoba masuk secara anonim...");
         await signInAnonymously(auth);
+        console.log("Berhasil masuk secara anonim.");
       }
+    } else {
+      console.log("Firebase sudah diinisialisasi sebelumnya.");
+      isFirebaseReady = true;
+      sendMessageBtn.disabled = !(isFirebaseReady && auth.currentUser);
+      setupFirestoreListener();
     }
   } catch (error) {
-    console.error("Error initializing Firebase or signing in:", error);
-    messageErrorDisplay.textContent =
-      "Gagal menyambung ke pangkalan data. Sila cuba muat semula.";
+    console.error(
+      "Kesalahan saat menginisialisasi Firebase atau masuk:",
+      error
+    );
+    messageErrorDisplay.textContent = `Gagal menyambung ke pangkalan data: ${error.message}. Sila cuba muat semula.`;
     messageErrorDisplay.classList.remove("hidden");
-    isFirebaseReady = true;
-    sendMessageBtn.disabled = true;
+    isFirebaseReady = true; // Tetap diatur ke true untuk menghindari loading tak terbatas, tetapi dengan error
+    sendMessageBtn.disabled = true; // Nonaktifkan tombol kirim saat terjadi error
   }
 }
 
 // --- Logika Pesan Firestore ---
 function setupFirestoreListener() {
   if (isFirebaseReady && db) {
+    console.log("Menyiapkan listener Firestore.");
     const messagesCollectionRef = collection(
       db,
       `artifacts/${appId}/public/data/mensive_messages`
@@ -229,6 +280,7 @@ function setupFirestoreListener() {
     onSnapshot(
       q,
       (snapshot) => {
+        console.log("Data Firestore diterima.");
         const messagesData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -240,13 +292,20 @@ function setupFirestoreListener() {
           (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
         );
         renderMessages(messagesData);
+        console.log("Pesan diperbarui, jumlah:", messagesData.length);
       },
       (error) => {
-        console.error("Error fetching messages:", error);
-        messageErrorDisplay.textContent =
-          "Gagal memuatkan mesej. Sila cuba lagi.";
+        console.error("Kesalahan saat mengambil pesan dari Firestore:", error);
+        messageErrorDisplay.textContent = `Gagal memuatkan mesej: ${error.message}. Sila cuba lagi.`;
         messageErrorDisplay.classList.remove("hidden");
       }
+    );
+  } else {
+    console.log(
+      "Firestore listener tidak disiapkan: isFirebaseReady =",
+      isFirebaseReady,
+      "db =",
+      db
     );
   }
 }
@@ -259,8 +318,9 @@ function renderMessages(messages) {
   } else {
     messages.forEach((msg) => {
       const messageCard = document.createElement("div");
+      // Menghapus kelas 'relative' dan tombol hapus
       messageCard.className =
-        "bg-white p-6 rounded-2xl shadow-lg text-left transform transition-all duration-300 hover:scale-[1.02] relative";
+        "bg-white p-6 rounded-2xl shadow-lg text-left transform transition-all duration-300 hover:scale-[1.02]";
       messageCard.innerHTML = `
                 <p class="text-gray-800 text-lg leading-relaxed mb-3 whitespace-pre-wrap">${
                   msg.message
@@ -305,26 +365,20 @@ function renderMessages(messages) {
                         : ""
                     }
                 </p>
-                <button class="delete-message-btn absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold" data-id="${
-                  msg.id
-                }">
-                    &times;
-                </button>
+                <!-- Tombol hapus telah dihapus dari sini -->
             `;
       messagesContainer.appendChild(messageCard);
     });
 
-    document.querySelectorAll(".delete-message-btn").forEach((button) => {
-      button.addEventListener("click", (event) => {
-        const messageId = event.target.dataset.id;
-        showCustomConfirm(
-          "Apakah Anda yakin ingin menghapus pesan ini?",
-          () => {
-            deleteMessage(messageId);
-          }
-        );
-      });
-    });
+    // Event listener untuk tombol hapus juga tidak diperlukan lagi karena tombolnya dihapus
+    // document.querySelectorAll('.delete-message-btn').forEach(button => {
+    //     button.addEventListener('click', (event) => {
+    //         const messageId = event.target.dataset.id;
+    //         showCustomConfirm('Apakah Anda yakin ingin menghapus pesan ini?', () => {
+    //             deleteMessage(messageId);
+    //         });
+    //     });
+    // });
   }
 }
 
@@ -380,11 +434,15 @@ function closeCustomConfirm() {
   }
 }
 
+// Fungsi deleteMessage ini tidak akan dipanggil lagi karena tombolnya dihapus dari UI
 async function deleteMessage(messageId) {
   if (!isFirebaseReady || !db || !auth.currentUser) {
     messageErrorDisplay.textContent =
       "Pangkalan data belum bersedia atau pengguna tidak disahkan. Sila cuba lagi.";
     messageErrorDisplay.classList.remove("hidden");
+    console.error(
+      "Mencoba menghapus pesan sebelum Firebase siap atau pengguna diautentikasi."
+    );
     return;
   }
 
@@ -395,9 +453,10 @@ async function deleteMessage(messageId) {
       messageId
     );
     await deleteDoc(messageRef);
+    console.log("Pesan berhasil dihapus:", messageId);
     messageErrorDisplay.classList.add("hidden");
   } catch (error) {
-    console.error("Error deleting message:", error);
+    console.error("Kesalahan saat menghapus pesan:", error);
     messageErrorDisplay.textContent = `Gagal menghapus pesan: ${error.message}. Sila cuba lagi.`;
     messageErrorDisplay.classList.remove("hidden");
   }
@@ -411,18 +470,21 @@ function extractSpotifyTrackId(url) {
   return match ? match[1] : null;
 }
 
+// --- Logika Spotify API ---
 async function getSpotifyAccessToken() {
   if (
-    SPOTIFY_CLIENT_ID === "YOUR_SPOTIFY_CLIENT_ID" ||
-    SPOTIFY_CLIENT_SECRET === "YOUR_SPOTIFY_CLIENT_SECRET"
+    SPOTIFY_CLIENT_ID === "GANTI_DENGAN_CLIENT_ID_SPOTIFY_ANDA" ||
+    SPOTIFY_CLIENT_SECRET === "GANTI_DENGAN_CLIENT_SECRET_SPOTIFY_ANDA"
   ) {
     messageErrorDisplay.textContent =
       "Error Spotify: Sila masukkan Client ID dan Client Secret Spotify Anda di script.js.";
     messageErrorDisplay.classList.remove("hidden");
+    console.error("Spotify API keys belum diatur.");
     return;
   }
 
   try {
+    console.log("Mencoba mendapatkan token akses Spotify...");
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
@@ -435,15 +497,16 @@ async function getSpotifyAccessToken() {
     const data = await response.json();
     if (data.access_token) {
       spotifyAccessToken = data.access_token;
+      console.log("Token akses Spotify berhasil didapatkan.");
       messageErrorDisplay.classList.add("hidden");
     } else {
-      console.error("Failed to get Spotify Access Token:", data);
+      console.error("Gagal mendapatkan token akses Spotify:", data);
       messageErrorDisplay.textContent =
         "Gagal mendapatkan token Spotify. Pastikan Client ID dan Secret benar.";
       messageErrorDisplay.classList.remove("hidden");
     }
   } catch (error) {
-    console.error("Error fetching Spotify Access Token:", error);
+    console.error("Kesalahan saat mengambil token akses Spotify:", error);
     messageErrorDisplay.textContent =
       "Terjadi kesalahan saat menyambung ke Spotify API.";
     messageErrorDisplay.classList.remove("hidden");
@@ -457,11 +520,18 @@ async function searchSpotifyTracks(keyword) {
     return;
   }
   if (!spotifyAccessToken) {
+    console.log(
+      "Token akses Spotify belum ada, mencoba mendapatkannya sebelum mencari..."
+    );
     await getSpotifyAccessToken();
-    if (!spotifyAccessToken) return;
+    if (!spotifyAccessToken) {
+      console.log("Masih tidak ada token Spotify, pencarian dibatalkan.");
+      return;
+    }
   }
 
   try {
+    console.log(`Mencari lagu Spotify dengan kata kunci: "${keyword}"`);
     const response = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         keyword
@@ -473,9 +543,29 @@ async function searchSpotifyTracks(keyword) {
       }
     );
     const data = await response.json();
+    if (response.status === 401) {
+      // Token expired or invalid
+      console.warn(
+        "Spotify token mungkin tidak valid, mencoba mendapatkan yang baru..."
+      );
+      spotifyAccessToken = ""; // Clear old token
+      await getSpotifyAccessToken(); // Get new token
+      if (spotifyAccessToken) {
+        // If new token obtained, retry search
+        return searchSpotifyTracks(keyword);
+      } else {
+        console.error(
+          "Tidak dapat memperbarui token Spotify, pencarian gagal."
+        );
+        messageErrorDisplay.textContent =
+          "Token Spotify tidak valid atau kadaluarsa. Coba muat ulang halaman.";
+        messageErrorDisplay.classList.remove("hidden");
+        return;
+      }
+    }
     renderSpotifySearchResults(data.tracks.items);
   } catch (error) {
-    console.error("Error searching Spotify:", error);
+    console.error("Kesalahan saat mencari Spotify:", error);
     messageErrorDisplay.textContent = "Gagal mencari lagu di Spotify.";
     messageErrorDisplay.classList.remove("hidden");
   }
@@ -486,7 +576,7 @@ function renderSpotifySearchResults(tracks) {
   if (tracks.length === 0) {
     spotifySearchResultsDiv.innerHTML =
       '<p class="text-gray-600 text-sm p-2">Tiada hasil ditemukan.</p>';
-    spotifySearchResultsDiv.classList.remove("hidden");
+    spotifySearchResultsDiv.classList.add("hidden");
     return;
   }
 
@@ -519,6 +609,7 @@ function renderSpotifySearchResults(tracks) {
       spotifySearchInput.value = selectedSpotifyTrackName;
       spotifySearchResultsDiv.innerHTML = "";
       spotifySearchResultsDiv.classList.add("hidden");
+      console.log("Lagu Spotify dipilih, ID:", selectedSpotifyTrackId);
     });
     ul.appendChild(li);
   });
@@ -554,6 +645,10 @@ sendMessageBtn.addEventListener("click", async () => {
   const senderName = senderNameInput.value.trim();
   const trackIdToSave = selectedSpotifyTrackId;
 
+  console.log("Tombol Kirim Pesan diklik.");
+  console.log("isFirebaseReady:", isFirebaseReady);
+  console.log("auth.currentUser:", auth.currentUser);
+
   if (!newMessage) {
     messageErrorDisplay.textContent = "Mesej tidak boleh kosong.";
     messageErrorDisplay.classList.remove("hidden");
@@ -564,6 +659,9 @@ sendMessageBtn.addEventListener("click", async () => {
     messageErrorDisplay.textContent =
       "Pangkalan data belum bersedia atau pengguna tidak disahkan. Sila cuba lagi.";
     messageErrorDisplay.classList.remove("hidden");
+    console.error(
+      "Gagal mengirim: Firebase belum siap atau pengguna belum diautentikasi."
+    );
     return;
   }
 
@@ -575,6 +673,7 @@ sendMessageBtn.addEventListener("click", async () => {
                                 </svg> Kirim Pesan`;
 
   try {
+    console.log("Mencoba menambahkan dokumen ke Firestore...");
     const messagesCollectionRef = collection(
       db,
       `artifacts/${appId}/public/data/mensive_messages`
@@ -586,13 +685,14 @@ sendMessageBtn.addEventListener("click", async () => {
       timestamp: serverTimestamp(),
       userId: auth.currentUser.uid,
     });
+    console.log("Dokumen berhasil ditambahkan ke Firestore.");
     newMessageInput.value = "";
     senderNameInput.value = "";
     spotifySearchInput.value = "";
     selectedSpotifyTrackId = null;
     selectedSpotifyTrackName = "";
   } catch (error) {
-    console.error("Error sending message:", error);
+    console.error("Kesalahan saat menambahkan dokumen ke Firestore:", error);
     messageErrorDisplay.textContent = `Gagal menghantar mesej: ${error.message}. Sila cuba lagi.`;
     messageErrorDisplay.classList.remove("hidden");
   } finally {
@@ -649,8 +749,7 @@ function closeImageModal() {
 }
 
 function renderSpotifyPlaylist() {
-  // Pastikan YOUR_SPOTIFY_PLAYLIST_ID telah diganti
-  if (YOUR_SPOTIFY_PLAYLIST_ID === "YOUR_SPOTIFY_PLAYLIST_ID") {
+  if (YOUR_SPOTIFY_PLAYLIST_ID === "GANTI_DENGAN_ID_PLAYLIST_ANDA") {
     spotifyPlaylistEmbedDiv.innerHTML =
       '<p class="text-red-600">Sila masukkan ID Playlist Spotify Anda di script.js untuk melihat playlist.</p>';
     return;
@@ -670,6 +769,7 @@ function renderSpotifyPlaylist() {
 }
 
 window.onload = async () => {
+  console.log("window.onload dipanggil.");
   initFirebase();
   renderGallery();
   await getSpotifyAccessToken();
@@ -699,21 +799,28 @@ window.onload = async () => {
   // Event listeners for hamburger menu
   if (hamburgerBtn) {
     hamburgerBtn.addEventListener("click", openSidebar);
+    console.log("Listener klik tombol hamburger terpasang.");
+  } else {
+    console.error("Tombol hamburger tidak ditemukan!");
   }
 
   if (closeSidebarBtn) {
     closeSidebarBtn.addEventListener("click", closeSidebar);
+    console.log("Listener klik tombol tutup sidebar terpasang.");
+  } else {
+    console.error("Tombol tutup sidebar tidak ditemukan!");
   }
 
   if (overlay) {
     overlay.addEventListener("click", closeSidebar);
+    console.log("Listener klik overlay terpasang.");
+  } else {
+    console.error("Overlay tidak ditemukan!");
   }
 
   // Close sidebar when a nav item is clicked
   document.querySelectorAll("#navbar button").forEach((button) => {
     button.addEventListener("click", () => {
-      // Only close sidebar if it's currently open and on mobile view
-      // Check if it's not desktop view (md:relative is only on desktop)
       if (!window.matchMedia("(min-width: 768px)").matches) {
         closeSidebar();
       }
