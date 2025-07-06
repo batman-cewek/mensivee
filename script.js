@@ -69,6 +69,8 @@ let currentUserId = null;
 const galleryItems = [
   { src: "images/1.jpg", caption: "Kenangan Manis Bersamamu" }, // Pastikan jalur ini benar relatif terhadap index.html
   { src: "images/2.jpg", caption: "Cinta Kita yang Tak Berujung" },
+  { src: "images/3.jpg", caption: "Cinta Kita yang Tak Berujung" },
+  { src: "images/4.jpg", caption: "Cinta Kita yang Tak Berujung" },
   {
     src: "https://placehold.co/600x450/D291BC/FFFFFF?text=Momen+3",
     caption: "Selalu Bersama dalam Suka dan Duka",
