@@ -60,7 +60,7 @@ let currentUserId = null;
 // Data untuk item galeri
 const galleryItems = [
   {
-    src: "../images/1.jpg",
+    src: "../mensive/images/1.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
   {
@@ -68,11 +68,11 @@ const galleryItems = [
     caption: "Kenangan Manis Bersamamu",
   },
   {
-    src: "../images/3.jpg",
+    src: "images/3.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
   {
-    src: "../images/4.jpg",
+    src: "images/4.jpg",
     caption: "Kenangan Manis Bersamamu",
   },
 ];
