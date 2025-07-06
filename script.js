@@ -59,22 +59,10 @@ let currentUserId = null;
 
 // Data untuk item galeri
 const galleryItems = [
-  {
-    src: "../mensive/images/1.jpg",
-    caption: "Kenangan Manis Bersamamu",
-  },
-  {
-    src: "../images/2.jpg",
-    caption: "Kenangan Manis Bersamamu",
-  },
-  {
-    src: "images/3.jpg",
-    caption: "Kenangan Manis Bersamamu",
-  },
-  {
-    src: "images/4.jpg",
-    caption: "Kenangan Manis Bersamamu",
-  },
+  { src: "images/1.jpg", caption: "Kenangan Manis Bersamamu" },
+  { src: "images/2.jpg", caption: "Kenangan Manis Bersamamu" },
+  { src: "images/3.jpg", caption: "Kenangan Manis Bersamamu" },
+  { src: "images/4.jpg", caption: "Kenangan Manis Bersamamu" },
 ];
 
 // Mendapatkan referensi ke elemen UI
