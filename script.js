@@ -67,26 +67,12 @@ let currentUserId = null;
 
 // Data untuk item galeri
 const galleryItems = [
-  { src: "images/1.jpg", caption: "Kenangan Manis Bersamamu" }, // Pastikan jalur ini benar relatif terhadap index.html
-  { src: "images/2.jpg", caption: "Cinta Kita yang Tak Berujung" },
-  { src: "images/3.jpg", caption: "Cinta Kita yang Tak Berujung" },
-  { src: "images/4.jpg", caption: "Cinta Kita yang Tak Berujung" },
-  {
-    src: "https://placehold.co/600x450/D291BC/FFFFFF?text=Momen+3",
-    caption: "Selalu Bersama dalam Suka dan Duka",
-  },
-  {
-    src: "https://placehold.co/600x450/FFC72C/FFFFFF?text=Momen+4",
-    caption: "Petualangan Kita yang Tak Terlupakan",
-  },
-  {
-    src: "https://placehold.co/600x450/A0DAA9/FFFFFF?text=Momen+5",
-    caption: "Senyum Manismu yang Menerangi Hari",
-  },
-  {
-    src: "https://placehold.co/600x450/F0F8FF/000000?text=Momen+6",
-    caption: "Masa Depan Cerah Bersama",
-  },
+  { src: "images/1.jpg", caption: "Saat ingin denganmu.." },
+  { src: "images/2.jpg", caption: "About you - The 1975" },
+  { src: "images/3.jpg", caption: "Wahhh ada apa ya kira-kira?" },
+  { src: "images/4.jpg", caption: "Lihat-lihat, betapa gemasnyaa" },
+  { src: "images/5.jpg", caption: "Love letterr buat Sasaa" },
+  { src: "images/6.jpg", caption: "Cinta kita terlukis indah" },
 ];
 
 // Mendapatkan referensi ke elemen UI
