@@ -30,9 +30,9 @@ const firebaseConfig = {
   apiKey: "AIzaSyBuQ35XFnW9SW-BEZlT-qkNtaU3stoDFsc",
   authDomain: "songfess-6cae9.firebaseapp.com",
   projectId: "songfess-6cae9",
-  storageBucket: "songfess-6cae9.appspot.com",
+  storageBucket: "songfess-6cae9.firebasestorage.app",
   messagingSenderId: "939416112749",
-  appId: "1:939416112749:web:d7fcb29b17420001b0b964",
+  appId: "1:939416112749:web:d7fcb29b17420001b0b964"
 };
 const initialAuthToken =
   typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null; // Biarkan ini seperti adanya
@@ -815,4 +815,5 @@ window.onload = async () => {
     });
   });
 };
+
 
