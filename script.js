@@ -27,12 +27,12 @@ console.log("script.js: Skrip mulai dimuat.");
 // =================================================================================================
 const appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id"; // Biarkan ini seperti adanya
 const firebaseConfig = {
-  apiKey: "AIzaSyDAfPl_qzTnr2h49_ML60rNXXeYsQXXlMA",
-  authDomain: "mensive-83be2.firebaseapp.com",
-  projectId: "mensive-83be2",
-  storageBucket: "mensive-83be2.firebasestorage.app",
-  messagingSenderId: "34056273618",
-  appId: "1:34056273618:web:793b40a21520e074f6b70b",
+  apiKey: "AIzaSyBuQ35XFnW9SW-BEZlT-qkNtaU3stoDFsc",
+  authDomain: "songfess-6cae9.firebaseapp.com",
+  projectId: "songfess-6cae9",
+  storageBucket: "songfess-6cae9.appspot.com",
+  messagingSenderId: "939416112749",
+  appId: "1:939416112749:web:d7fcb29b17420001b0b964",
 };
 const initialAuthToken =
   typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null; // Biarkan ini seperti adanya
@@ -815,3 +815,4 @@ window.onload = async () => {
     });
   });
 };
+
