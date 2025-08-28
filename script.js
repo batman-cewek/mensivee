@@ -52,9 +52,12 @@ let currentUserId = null;
 // Data untuk item galeri
 const galleryItems = [
   { src: "images/1.jpg", caption: "Foto Pertama" },
-  { src: "images/bgus gk.jpg", caption: "Foto Kedua" },
-  { src: "images/webcam1.jpg", caption: "Foto ketiga" },
-  { src: "images/webcam2.jpg", caption: "Foto keempat" },
+  { src: "images/2.jpg", caption: "Foto Kedua" },
+  { src: "images/3.jpg", caption: "Foto ketiga" },
+  { src: "images/4.jpg", caption: "Foto keempat" },
+  { src: "images/5.jpg", caption: "Foto kelima" },
+  { src: "images/6.jpg", caption: "Foto keenam" },
+  { src: "images/7.jpg", caption: "Foto ketujuh" },
   // ...
 ];
 
@@ -570,3 +573,4 @@ window.onload = async () => {
     }
   });
 };
+
