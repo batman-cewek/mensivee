@@ -65,18 +65,27 @@ const galleryItems = [
 const navHomeBtn = document.getElementById("nav-home");
 const navMessageBtn = document.getElementById("nav-message");
 const navGalleryBtn = document.getElementById("nav-gallery");
+const navPlaylistBtn = document.getElementById("nav-playlist");
 const navbar = document.getElementById("navbar");
 const mainContentWrapper = document.getElementById("main-content-wrapper");
 
 const homeSection = document.getElementById("home-section");
 const messageSection = document.getElementById("message-section");
 const gallerySection = document.getElementById("gallery-section");
+const playlistSection = document.getElementById("playlist-section");
+const spotifyPlaylistEmbed = document.getElementById("spotify-playlist-embed");
 
 const newMessageInput = document.getElementById("new-message-input");
 const spotifySearchInput = document.getElementById("spotify-search-input"); // Referensi input carian baru
 const spotifySearchResultsDiv = document.getElementById(
   "spotify-search-results"
 ); // Referensi div hasil carian
+
+// Selected playlist (opsional)
+let selectedSpotifyPlaylistId = null;
+let selectedSpotifyPlaylistName = "";
+
+// Sender name input
 const senderNameInput = document.getElementById("sender-name-input");
 const sendMessageBtn = document.getElementById("send-message-btn");
 const messageErrorDisplay = document.getElementById("message-error");
@@ -97,14 +106,17 @@ function navigateTo(page) {
   homeSection.classList.add("hidden");
   messageSection.classList.add("hidden");
   gallerySection.classList.add("hidden");
+  playlistSection.classList.add("hidden");
 
   // Hapus kelas aktif dari semua tombol navigasi
   navHomeBtn.classList.remove("bg-purple-500", "text-white", "shadow-md");
   navMessageBtn.classList.remove("bg-purple-500", "text-white", "shadow-md");
   navGalleryBtn.classList.remove("bg-purple-500", "text-white", "shadow-md");
+  navPlaylistBtn.classList.remove("bg-purple-500", "text-white", "shadow-md");
   navHomeBtn.classList.add("text-gray-700", "hover:bg-gray-100");
   navMessageBtn.classList.add("text-gray-700", "hover:bg-gray-100");
   navGalleryBtn.classList.add("text-gray-700", "hover:bg-gray-100");
+  navPlaylistBtn.classList.add("text-gray-700", "hover:bg-gray-100");
 
   // Animasi keluar konten utama
   mainContentWrapper.classList.remove("scale-100", "opacity-100");
@@ -127,6 +139,22 @@ function navigateTo(page) {
         gallerySection.classList.remove("hidden");
         navGalleryBtn.classList.add("bg-purple-500", "text-white", "shadow-md");
         navGalleryBtn.classList.remove("text-gray-700", "hover:bg-gray-100");
+        break;
+      case "playlist":
+        playlistSection.classList.remove("hidden");
+        navPlaylistBtn.classList.add(
+          "bg-purple-500",
+          "text-white",
+          "shadow-md"
+        );
+        navPlaylistBtn.classList.remove("text-gray-700", "hover:bg-gray-100");
+        // Tampilkan embed jika ada playlist yang telah dipilih
+        if (
+          typeof setSpotifyPlaylistEmbed === "function" &&
+          selectedSpotifyPlaylistId
+        ) {
+          setSpotifyPlaylistEmbed(selectedSpotifyPlaylistId);
+        }
         break;
     }
     currentPage = page; // Perbarui state halaman semasa
@@ -337,7 +365,7 @@ async function searchSpotifyTracks(keyword) {
     const response = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         keyword
-      )}&type=track&limit=5`,
+      )}&type=track,playlist&limit=8`,
       {
         headers: {
           Authorization: "Bearer " + spotifyAccessToken,
@@ -345,7 +373,7 @@ async function searchSpotifyTracks(keyword) {
       }
     );
     const data = await response.json();
-    renderSpotifySearchResults(data.tracks.items);
+    renderSpotifySearchResults(data);
   } catch (error) {
     console.error("Error searching Spotify:", error);
     messageErrorDisplay.textContent = "Gagal mencari lagu di Spotify.";
@@ -353,9 +381,12 @@ async function searchSpotifyTracks(keyword) {
   }
 }
 
-function renderSpotifySearchResults(tracks) {
+function renderSpotifySearchResults(data) {
   spotifySearchResultsDiv.innerHTML = ""; // Hapus hasil sebelumnya
-  if (tracks.length === 0) {
+  const tracks = (data && data.tracks && data.tracks.items) || [];
+  const playlists = (data && data.playlists && data.playlists.items) || [];
+
+  if (tracks.length === 0 && playlists.length === 0) {
     spotifySearchResultsDiv.innerHTML =
       '<p class="text-gray-600 text-sm p-2">Tiada hasil ditemukan.</p>';
     spotifySearchResultsDiv.classList.remove("hidden");
@@ -365,6 +396,60 @@ function renderSpotifySearchResults(tracks) {
   const ul = document.createElement("ul");
   ul.className = "w-full"; // Tailwind class for full width
 
+  // Render playlists first
+  playlists.forEach((pl) => {
+    const li = document.createElement("li");
+    li.className =
+      "p-2 cursor-pointer hover:bg-purple-100 flex items-center border-b border-gray-100 last:border-b-0";
+    li.innerHTML = `
+            <img src="${
+              pl.images[0]?.url ||
+              "https://placehold.co/50x50/cccccc/ffffff?text=No+Art"
+            }" class="w-10 h-10 rounded-md mr-3" alt="Playlist Art">
+            <div>
+                <div class="font-medium text-gray-800">${pl.name}</div>
+                <div class="text-sm text-gray-600">Playlist • ${
+                  pl.owner?.display_name || pl.owner?.id || ""
+                }</div>
+            </div>
+        `;
+    li.dataset.playlistId = pl.id;
+    li.dataset.playlistName = pl.name;
+
+    li.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      selectedSpotifyPlaylistId = e.currentTarget.dataset.playlistId;
+      selectedSpotifyPlaylistName = e.currentTarget.dataset.playlistName;
+      spotifySearchInput.value = selectedSpotifyPlaylistName;
+      selectedSpotifyTrackId = null;
+      selectedSpotifyTrackName = "";
+      spotifySearchResultsDiv.innerHTML = "";
+      spotifySearchResultsDiv.classList.add("hidden");
+      // show preview
+      setSpotifyPlaylistEmbed(selectedSpotifyPlaylistId);
+      console.log("Selected Spotify Playlist ID:", selectedSpotifyPlaylistId);
+      // navigate to playlist preview
+      navigateTo("playlist");
+    });
+    li.addEventListener("click", (e) => {
+      selectedSpotifyPlaylistId = e.currentTarget.dataset.playlistId;
+      selectedSpotifyPlaylistName = e.currentTarget.dataset.playlistName;
+      spotifySearchInput.value = selectedSpotifyPlaylistName;
+      selectedSpotifyTrackId = null;
+      selectedSpotifyTrackName = "";
+      spotifySearchResultsDiv.innerHTML = "";
+      spotifySearchResultsDiv.classList.add("hidden");
+      setSpotifyPlaylistEmbed(selectedSpotifyPlaylistId);
+      navigateTo("playlist");
+      console.log(
+        "Selected Spotify Playlist ID (click):",
+        selectedSpotifyPlaylistId
+      );
+    });
+    ul.appendChild(li);
+  });
+
+  // Then render tracks
   tracks.forEach((track) => {
     const li = document.createElement("li");
     li.className =
@@ -385,13 +470,29 @@ function renderSpotifySearchResults(tracks) {
     li.dataset.trackName = `${track.name} - ${track.artists
       .map((artist) => artist.name)
       .join(", ")}`;
+    // Gunakan 'pointerdown' supaya pilihan terdeteksi sebelum input kehilangan fokus (masalah pada mobile)
+    li.addEventListener("pointerdown", (e) => {
+      // Prevent default agar klik tidak memicu perubahan fokus sebelum kita atur nilai
+      e.preventDefault();
+      selectedSpotifyTrackId = e.currentTarget.dataset.trackId;
+      selectedSpotifyTrackName = e.currentTarget.dataset.trackName;
+      spotifySearchInput.value = selectedSpotifyTrackName; // Set input ke nama lagu yang dipilih
+      spotifySearchResultsDiv.innerHTML = ""; // Hapus dropdown
+      spotifySearchResultsDiv.classList.add("hidden"); // Sembunyikan div hasil carian
+      console.log(
+        "Selected Spotify Track ID (pointerdown):",
+        selectedSpotifyTrackId
+      );
+    });
+
+    // Tetap pertahankan click sebagai fallback untuk perangkat/peramban yang tidak mendukung pointer events
     li.addEventListener("click", (e) => {
       selectedSpotifyTrackId = e.currentTarget.dataset.trackId;
       selectedSpotifyTrackName = e.currentTarget.dataset.trackName;
       spotifySearchInput.value = selectedSpotifyTrackName; // Set input ke nama lagu yang dipilih
       spotifySearchResultsDiv.innerHTML = ""; // Hapus dropdown
       spotifySearchResultsDiv.classList.add("hidden"); // Sembunyikan div hasil carian
-      console.log("Selected Spotify Track ID:", selectedSpotifyTrackId);
+      console.log("Selected Spotify Track ID (click):", selectedSpotifyTrackId);
     });
     ul.appendChild(li);
   });
@@ -414,6 +515,50 @@ spotifySearchInput.addEventListener("input", () => {
   } else {
     spotifySearchResultsDiv.innerHTML = ""; // Hapus hasil jika kata kunci terlalu pendek
     spotifySearchResultsDiv.classList.add("hidden");
+  }
+});
+
+// Helper: set iframe embed untuk playlist
+function setSpotifyPlaylistEmbed(playlistId) {
+  if (!spotifyPlaylistEmbed) return;
+  if (!playlistId) {
+    spotifyPlaylistEmbed.innerHTML = "";
+    return;
+  }
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("data-testid", "embed-iframe");
+  iframe.style.borderRadius = "12px";
+  iframe.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator`;
+  iframe.width = "100%";
+  iframe.height = "352";
+  iframe.frameBorder = "0";
+  iframe.allowFullscreen = true;
+  iframe.setAttribute(
+    "allow",
+    "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  );
+  iframe.loading = "lazy";
+  spotifyPlaylistEmbed.innerHTML = "";
+  spotifyPlaylistEmbed.appendChild(iframe);
+}
+
+// Jika user menekan Enter pada input pencarian, periksa apakah itu link playlist dan set embed
+spotifySearchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const val = spotifySearchInput.value.trim();
+    const matchPl = val.match(/spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
+    if (matchPl && matchPl[1]) {
+      selectedSpotifyPlaylistId = matchPl[1];
+      selectedSpotifyPlaylistName = val;
+      setSpotifyPlaylistEmbed(selectedSpotifyPlaylistId);
+      // navigate to playlist section to preview
+      navigateTo("playlist");
+      // prevent form submission / default
+      e.preventDefault();
+      // hide results
+      spotifySearchResultsDiv.innerHTML = "";
+      spotifySearchResultsDiv.classList.add("hidden");
+    }
   }
 });
 
@@ -565,6 +710,7 @@ window.onload = async () => {
   navHomeBtn.addEventListener("click", () => navigateTo("home"));
   navMessageBtn.addEventListener("click", () => navigateTo("message"));
   navGalleryBtn.addEventListener("click", () => navigateTo("gallery"));
+  navPlaylistBtn.addEventListener("click", () => navigateTo("playlist"));
   closeModalBtn.addEventListener("click", closeImageModal);
   imageModal.addEventListener("click", (e) => {
     // Tutup modal saat mengklik di luar konten
@@ -572,5 +718,12 @@ window.onload = async () => {
       closeImageModal();
     }
   });
-};
 
+  // --- Hamburger Menu untuk Mobile ---
+  const hamburgerBtn = document.getElementById("hamburger-btn");
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", () => {
+      navbar.classList.toggle("hidden");
+    });
+  }
+};
